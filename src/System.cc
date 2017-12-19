@@ -57,7 +57,6 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
        exit(-1);
     }
 
-
     //Load ORB Vocabulary
     cout << endl << "Loading ORB Vocabulary. This could take a while..." << endl;
 
@@ -111,6 +110,16 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     mpLoopCloser->SetTracker(mpTracker);
     mpLoopCloser->SetLocalMapper(mpLocalMapper);
+}
+
+const vector<MapPoint*> System::GetAllMapPoints()
+{
+	return mpMap->GetAllMapPoints();
+}
+
+const vector<MapPoint*> System::GetReferenceMapPoints()
+{
+	return mpMap->GetReferenceMapPoints();
 }
 
 cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp)

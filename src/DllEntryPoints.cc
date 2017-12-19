@@ -27,6 +27,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <System.h>
+#include <MapPoint.h>
 
 using namespace std;
 
@@ -128,6 +129,97 @@ extern "C"
 
 			return matrix;
 		}
+	}
+
+	__declspec(dllexport) float* get_tracked_screen(void* slam_system_ptr, int* size)
+	{
+		ORB_SLAM2::System* slam_system = (ORB_SLAM2::System*) slam_system_ptr;
+		*size = 0;
+		auto key_points = slam_system->GetTrackedKeyPointsUn();
+		auto vector_size = key_points.size();
+		if (vector_size > 0)
+		{
+			float* points = new float[vector_size * 2];
+			for (int i = 0; i < vector_size; i++)
+			{
+				auto current_point = key_points[i];
+				points[i * 2 + 0] = current_point.pt.x;
+				points[i * 2 + 1] = current_point.pt.y;
+			}
+			*size = vector_size * 2;
+			return points;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	__declspec(dllexport) float* get_3d_tracked_points(void* slam_system_ptr, int* size)
+	{
+		ORB_SLAM2::System* slam_system = (ORB_SLAM2::System*) slam_system_ptr;
+
+		auto vpMPs = slam_system->GetAllMapPoints();
+		auto vpRefMPs = slam_system->GetReferenceMapPoints();
+
+		set<ORB_SLAM2::MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+
+		*size = 0;
+		if (vpMPs.empty())
+		{
+			return NULL;
+		}
+
+		int total_points = 0;
+		for (size_t i = 0, iend = vpMPs.size(); i<iend; i++)
+		{
+			if (vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]))
+			{
+				continue;
+			}
+			total_points++;
+		}
+
+		for (auto sit = spRefMPs.begin(), send = spRefMPs.end(); sit != send; sit++)
+		{
+			if ((*sit)->isBad())
+			{
+				continue;
+			}
+			total_points++;
+		}
+
+		*size = total_points;
+		float* points = new float[total_points * 4];
+		int index = 0;
+		for (size_t i = 0, iend = vpMPs.size(); i<iend; i++)
+		{
+			if (vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]))
+			{
+				continue;
+			}
+			cv::Mat mat = vpMPs[i]->GetWorldPos();
+			points[index * 4 + 0] = mat.at<float>(0, 0);
+			points[index * 4 + 1] = mat.at<float>(0, 1);
+			points[index * 4 + 2] = mat.at<float>(0, 2);
+			points[index * 4 + 3] = 0;
+			index++;
+		}
+
+		for (auto sit = spRefMPs.begin(), send = spRefMPs.end(); sit != send; sit++)
+		{
+			if ((*sit)->isBad())
+			{
+				continue;
+			}
+			cv::Mat mat = (*sit)->GetWorldPos();
+			points[index * 4 + 0] = mat.at<float>(0, 0);
+			points[index * 4 + 1] = mat.at<float>(0, 1);
+			points[index * 4 + 2] = mat.at<float>(0, 2);
+			points[index * 4 + 3] = 1;
+			index++;
+		}
+		return points;
 	}
 }
 

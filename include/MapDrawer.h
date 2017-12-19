@@ -45,7 +45,13 @@ public:
     void SetReferenceKeyFrame(KeyFrame *pKF);
     //void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M);
 
+	const vector<cv::Mat> GetAllMapPoints();
+	const vector<cv::Mat> GetReferenceMapPoints();
+
 private:
+
+	vector<cv::Mat> mMapPoints;
+	vector<cv::Mat> mReferencePoints;
 
     float mKeyFrameSize;
     float mKeyFrameLineWidth;
@@ -57,6 +63,7 @@ private:
     cv::Mat mCameraPose;
 
     std::mutex mMutexCamera;
+	std::mutex mMutexMap;
 };
 
 } //namespace ORB_SLAM

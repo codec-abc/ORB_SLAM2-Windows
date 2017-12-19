@@ -128,13 +128,14 @@ void Viewer::Run()
         d_cam.Activate(s_cam);
         glClearColor(1.0f,1.0f,1.0f,1.0f);
         mpMapDrawer->DrawCurrentCamera(Twc);
-        if(menuShowKeyFrames || menuShowGraph)
-            mpMapDrawer->DrawKeyFrames(menuShowKeyFrames,menuShowGraph);
-        if(menuShowPoints)
+		*/
+        //if(menuShowKeyFrames || menuShowGraph)
+            mpMapDrawer->DrawKeyFrames(true, true);
+        //if(menuShowPoints)
             mpMapDrawer->DrawMapPoints();
 
-        pangolin::FinishFrame();
-*/
+        //pangolin::FinishFrame();
+
         cv::Mat im = mpFrameDrawer->DrawFrame();
         cv::imshow("ORB-SLAM2: Current Frame",im);
         cv::waitKey(mT);

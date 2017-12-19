@@ -112,14 +112,14 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mpLoopCloser->SetLocalMapper(mpLocalMapper);
 }
 
-const vector<MapPoint*> System::GetAllMapPoints()
+const vector<cv::Mat> System::GetAllMapPoints()
 {
-	return mpMap->GetAllMapPoints();
+	return mpMapDrawer->GetAllMapPoints();
 }
 
-const vector<MapPoint*> System::GetReferenceMapPoints()
+const vector<cv::Mat> System::GetReferenceMapPoints()
 {
-	return mpMap->GetReferenceMapPoints();
+	return mpMapDrawer->GetReferenceMapPoints();
 }
 
 const vector<cv::KeyPoint> System::GetFrame2DPoints()

@@ -158,47 +158,15 @@ extern "C"
 	__declspec(dllexport) float* get_3d_tracked_points(void* slam_system_ptr, int* size)
 	{
 		ORB_SLAM2::System* slam_system = (ORB_SLAM2::System*) slam_system_ptr;
-
 		auto vpMPs = slam_system->GetAllMapPoints();
 		auto vpRefMPs = slam_system->GetReferenceMapPoints();
-
-		set<ORB_SLAM2::MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
-
-		*size = 0;
-		if (vpMPs.empty())
-		{
-			return NULL;
-		}
-
-		int total_points = 0;
-		for (size_t i = 0, iend = vpMPs.size(); i<iend; i++)
-		{
-			if (vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]))
-			{
-				continue;
-			}
-			total_points++;
-		}
-
-		for (auto sit = spRefMPs.begin(), send = spRefMPs.end(); sit != send; sit++)
-		{
-			if ((*sit)->isBad())
-			{
-				continue;
-			}
-			total_points++;
-		}
-
-		*size = total_points;
+		int total_points = vpMPs.size() + vpRefMPs.size();
+		*size = total_points * 4;
 		float* points = new float[total_points * 4];
 		int index = 0;
 		for (size_t i = 0, iend = vpMPs.size(); i<iend; i++)
 		{
-			if (vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]))
-			{
-				continue;
-			}
-			cv::Mat mat = vpMPs[i]->GetWorldPos();
+			cv::Mat mat = vpMPs[i];
 			points[index * 4 + 0] = mat.at<float>(0, 0);
 			points[index * 4 + 1] = mat.at<float>(0, 1);
 			points[index * 4 + 2] = mat.at<float>(0, 2);
@@ -206,13 +174,9 @@ extern "C"
 			index++;
 		}
 
-		for (auto sit = spRefMPs.begin(), send = spRefMPs.end(); sit != send; sit++)
+		for (size_t i = 0, iend = vpRefMPs.size(); i<iend; i++)
 		{
-			if ((*sit)->isBad())
-			{
-				continue;
-			}
-			cv::Mat mat = (*sit)->GetWorldPos();
+			cv::Mat mat = vpRefMPs[i];
 			points[index * 4 + 0] = mat.at<float>(0, 0);
 			points[index * 4 + 1] = mat.at<float>(0, 1);
 			points[index * 4 + 2] = mat.at<float>(0, 2);

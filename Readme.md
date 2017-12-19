@@ -10,4 +10,6 @@ First build OpenCV (version 3.3.1) from source with the following options:
 * Generate OpenCV World
 * Disable tests and documentation generation (not mandatory only save times)
 
-Once generated a Visual Studio solution using CMake. Set the ```OpenCVIncludeDir``` variable to the path where the includes folder is.
+Then build OpenCV using Visual studio and run the install project once to generated the headers files.
+
+Then generate a Visual Studio solution using CMake. set the ```OpenCVIncludeDir``` variable to the path where the includes folder is.

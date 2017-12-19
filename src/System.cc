@@ -122,6 +122,11 @@ const vector<MapPoint*> System::GetReferenceMapPoints()
 	return mpMap->GetReferenceMapPoints();
 }
 
+const vector<cv::KeyPoint> System::GetFrame2DPoints()
+{
+	return mpFrameDrawer->GetFrame2DPoints();
+}
+
 cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp)
 {
     if(mSensor!=STEREO)

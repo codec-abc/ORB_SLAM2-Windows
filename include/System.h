@@ -122,8 +122,9 @@ public:
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
-	const vector<MapPoint*> System::GetAllMapPoints();
-	const vector<MapPoint*> System::GetReferenceMapPoints();
+	const vector<MapPoint*> GetAllMapPoints();
+	const vector<MapPoint*> GetReferenceMapPoints();
+	const vector<cv::KeyPoint> GetFrame2DPoints();
 
 private:
 

@@ -125,6 +125,25 @@ cv::Mat FrameDrawer::DrawFrame()
     return imWithInfo;
 }
 
+const vector<cv::KeyPoint> FrameDrawer::GetFrame2DPoints()
+{
+	if (mState == Tracking::NOT_INITIALIZED)
+	{
+		return mvCurrentKeys;
+	}
+	else if (mState == Tracking::OK)
+	{
+		return mvCurrentKeys;
+	}
+	else if (mState == Tracking::LOST)
+	{
+		return mvCurrentKeys;
+	}
+	else 
+	{
+		return vector<cv::KeyPoint>();
+	}
+}
 
 void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText)
 {

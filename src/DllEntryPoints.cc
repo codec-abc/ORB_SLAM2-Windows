@@ -135,7 +135,7 @@ extern "C"
 	{
 		ORB_SLAM2::System* slam_system = (ORB_SLAM2::System*) slam_system_ptr;
 		*size = 0;
-		auto key_points = slam_system->GetTrackedKeyPointsUn();
+		auto key_points = slam_system->GetFrame2DPoints();
 		auto vector_size = key_points.size();
 		if (vector_size > 0)
 		{

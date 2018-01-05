@@ -134,6 +134,19 @@ void FORB::fromString(FORB::TDescriptor &a, const std::string &s)
   
 }
 
+void FORB::fromData(TDescriptor &a, const std::vector<int> &v, int offset)
+{
+	a.create(1, FORB::L, CV_8U);
+	unsigned char *p = a.ptr<unsigned char>();
+	for (int i = 0; i < FORB::L; ++i, ++p)
+	{
+		int index = i + offset;
+		int n = v[index];
+
+		*p = (unsigned char)n;
+	}
+}
+
 // --------------------------------------------------------------------------
 
 void FORB::toMat32F(const std::vector<TDescriptor> &descriptors, 

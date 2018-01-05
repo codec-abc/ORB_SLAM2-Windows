@@ -28,14 +28,32 @@
 
 #include <System.h>
 #include <MapPoint.h>
+#include <Tracking.h>
 
 using namespace std;
 
 extern "C" 
 {
+	__declspec(dllexport) void* read_vocab_file(const char* vocabulary_file_path)
+	{
+		ORB_SLAM2::ORBVocabulary* vocabulary = new ORB_SLAM2::ORBVocabulary();
+		bool bVocLoad = vocabulary->loadFromBinaryFile(vocabulary_file_path);
+			//vocabulary->loadFromTextFile(vocabulary_file_path);
+		if (!bVocLoad)
+		{
+			delete vocabulary;
+			return NULL;
+		}
+		else
+		{
+			return vocabulary;
+		}
+	}
+
 	__declspec(dllexport) void* create_SLAM_system
 	(
-		const char* vocabulary_file_path, 
+		//const char* vocabulary_file_path,
+		const void* vocab_pointer,
 		const char* camera_config_file,
 		unsigned char display_window
 	)
@@ -43,7 +61,7 @@ extern "C"
 		ORB_SLAM2::System* slam_ptr = 
 			new ORB_SLAM2::System
 			(
-				vocabulary_file_path, 
+				(ORB_SLAM2::ORBVocabulary*) vocab_pointer,
 				camera_config_file, 
 				ORB_SLAM2::System::MONOCULAR, 
 				display_window != 0
@@ -86,6 +104,12 @@ extern "C"
 		free(pointer);
 	}
 
+	__declspec(dllexport) int get_tracking_state(void* slam_system_ptr)
+	{
+		ORB_SLAM2::System* slam_system = (ORB_SLAM2::System*) slam_system_ptr;
+		return slam_system->GetTrackingState();
+	}
+
 	__declspec(dllexport) float* update_image
 	(
 		void* slam_system_ptr, 
@@ -99,8 +123,11 @@ extern "C"
 		cv::Mat frame(height, width, CV_8UC3, image_data);
 
 		cv::Mat pose = slam_system->TrackMonocular(frame, time_stamp);
+		auto tracking_state = slam_system->GetTrackingState();
 
-		if (pose.empty())
+		bool is_tracking_ok = tracking_state == ORB_SLAM2::Tracking::eTrackingState::OK;
+
+		if (pose.empty() || (!is_tracking_ok) )
 		{
 			return nullptr;
 		}

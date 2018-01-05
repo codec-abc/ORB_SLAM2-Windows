@@ -167,6 +167,8 @@ void Viewer::Run()
             break;
     }
 
+	cv::destroyAllWindows();
+
     SetFinish();
 }
 

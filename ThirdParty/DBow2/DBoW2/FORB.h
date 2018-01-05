@@ -60,6 +60,8 @@ public:
    */
   static void fromString(TDescriptor &a, const std::string &s);
 
+  static void fromData(TDescriptor &a, const std::vector<int> &v, int offset);
+
   /**
    * Returns a mat with the descriptors in float format
    * @param descriptors

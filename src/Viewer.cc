@@ -27,9 +27,24 @@
 namespace ORB_SLAM2
 {
 
-Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, const string &strSettingPath):
-    mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
-    mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false)
+Viewer::Viewer
+(
+	System* pSystem, 
+	FrameDrawer *pFrameDrawer, 
+	MapDrawer *pMapDrawer, 
+	Tracking *pTracking, 
+	const string &strSettingPath,
+	bool bshowWindow
+):
+    mpSystem(pSystem), 
+	mpFrameDrawer(pFrameDrawer),
+	mpMapDrawer(pMapDrawer), 
+	mpTracker(pTracking),
+    mbFinishRequested(false), 
+	mbFinished(true), 
+	mbStopped(true), 
+	mbStopRequested(false),
+	mbShowWindow(bshowWindow)
 {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 
@@ -88,7 +103,10 @@ void Viewer::Run()
     //pangolin::OpenGlMatrix Twc;
     //Twc.SetIdentity();
 
-    cv::namedWindow("ORB-SLAM2: Current Frame");
+	if (mbShowWindow)
+	{
+		cv::namedWindow("ORB-SLAM2: Current Frame");
+	}
 
     bool bFollow = true;
     bool bLocalizationMode = false;
@@ -130,15 +148,18 @@ void Viewer::Run()
         mpMapDrawer->DrawCurrentCamera(Twc);
 		*/
         //if(menuShowKeyFrames || menuShowGraph)
-            mpMapDrawer->DrawKeyFrames(true, true);
+        mpMapDrawer->DrawKeyFrames(true, true);
+
         //if(menuShowPoints)
-            mpMapDrawer->DrawMapPoints();
+        mpMapDrawer->DrawMapPoints();
 
         //pangolin::FinishFrame();
-
-        cv::Mat im = mpFrameDrawer->DrawFrame();
-        cv::imshow("ORB-SLAM2: Current Frame",im);
-        cv::waitKey(mT);
+		if (mbShowWindow)
+		{
+			cv::Mat im = mpFrameDrawer->DrawFrame();
+			cv::imshow("ORB-SLAM2: Current Frame", im);
+			cv::waitKey(mT);
+		}
 
         /*if(menuReset)
         {
@@ -167,7 +188,10 @@ void Viewer::Run()
             break;
     }
 
-	cv::destroyAllWindows();
+	if (mbShowWindow)
+	{
+		cv::destroyAllWindows();
+	}
 
     SetFinish();
 }

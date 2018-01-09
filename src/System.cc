@@ -106,9 +106,19 @@ System::System
     mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
 
     //Initialize the Viewer thread and launch
-    if(bUseViewer)
+    //if(bUseViewer)
     {
-        mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,strSettingsFile);
+        mpViewer = 
+			new Viewer
+			(
+				this, 
+				mpFrameDrawer,
+				mpMapDrawer,
+				mpTracker,
+				strSettingsFile,
+				bUseViewer
+			);
+
         mptViewer = new thread(&Viewer::Run, mpViewer);
         mpTracker->SetViewer(mpViewer);
     }

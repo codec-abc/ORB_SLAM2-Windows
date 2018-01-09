@@ -41,6 +41,7 @@ MapDrawer::MapDrawer(Map* pMap, const string &strSettingPath):mpMap(pMap)
 
 }
 
+
 const vector<cv::Mat> MapDrawer::GetAllMapPoints()
 {
 	unique_lock<mutex> lock(mMutexMap);

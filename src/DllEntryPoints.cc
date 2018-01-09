@@ -191,7 +191,7 @@ extern "C"
 		*size = total_points * 4;
 		float* points = new float[total_points * 4];
 		int index = 0;
-		for (size_t i = 0, iend = vpMPs.size(); i<iend; i++)
+		for (size_t i = 0, iend = vpMPs.size(); i < iend; i++)
 		{
 			cv::Mat mat = vpMPs[i];
 			points[index * 4 + 0] = mat.at<float>(0, 0);
@@ -201,7 +201,7 @@ extern "C"
 			index++;
 		}
 
-		for (size_t i = 0, iend = vpRefMPs.size(); i<iend; i++)
+		for (size_t i = 0, iend = vpRefMPs.size(); i < iend; i++)
 		{
 			cv::Mat mat = vpRefMPs[i];
 			points[index * 4 + 0] = mat.at<float>(0, 0);
